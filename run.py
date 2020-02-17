@@ -3,7 +3,8 @@ from collections import defaultdict
 
 
 def main():
-    CURRENT_PATH = "data_set"
+    # Edit this to change which model to use
+    CURRENT_PATH = "train_set"
     # read each file, add that file to a list of files belonging to the same class
     data_path = CURRENT_PATH
     # get all files contained in the directory
