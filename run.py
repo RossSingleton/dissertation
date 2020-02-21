@@ -1,15 +1,16 @@
 import os
 from collections import defaultdict
 from sklearn import tree
-from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.datasets import load_files
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+from sklearn.model_selection import KFold
+import numpy as np
 
 
-def main():
+def split_off_not():
     # Edit this to change which model to use
-    CURRENT_PATH = "train_set"
+    CURRENT_PATH = "dev_set"
     # read each file, add that file to a list of files belonging to the same class
     data_path = CURRENT_PATH
     # get all files contained in the directory
@@ -24,13 +25,46 @@ def main():
             for line in f:
                 # each line in each file contains one single document
                 data[one_file].append(line)
+
+    for l in data:
+        for tweet in data[l]:
+            if tweet[-6] == "1":
+                f = open("off.txt", "a")
+                f.write(tweet)
+                f.close()
+                print(tweet[-6] + " OFF -> " + tweet)
+            else:
+                f = open("not.txt", "a")
+                f.write(tweet)
+                f.close()
+                print(tweet[-6] + " NOT -> " + tweet)
+
+
+def main():
+    # Edit this to change which model to use
+    CURRENT_PATH = "off_not"
+    # read each file, add that file to a list of files belonging to the same class
+    data_path = CURRENT_PATH
+    # get all files contained in the directory
+    list_of_files = os.listdir(data_path)
+    # data is a dictionary where each key is a string, and each value is a list
+    # Convenient because we do not have to check if the key exists or not, it will always work
+    data = defaultdict(list)
+    for one_file in list_of_files:
+        # os.path.join joins a path to a folder and a file into one manageable path
+        # in windows, something like os.path.join(c:\Users\luis,'file.txt') >>> 'c:\\Users\\luis\\file.txt'
+        with open(os.path.join(data_path, one_file), 'r') as f:
+            for line in f:
+                # each line in each file contains one single document
+                data[one_file].append(line)
+
     for label in data:
         print('For label ', label, ' we have ', len(data[label]), ' documents')
 
     # temp = load_files(data[one_file])
     # print(temp)
 
-    label2id = {'train_set.tsv': 0}
+    label2id = {'off.txt': 1, 'not.txt': 0}
     # print(data['dev_set.tsv'][1])
 
     # we will also store all documents in a single array to use the following bit of code
@@ -54,32 +88,21 @@ def main():
     vectorizer = CountVectorizer(max_features=50, stop_words='english')
     X = vectorizer.fit_transform(all_documents)
     print('These are our "features":', ', '.join(vectorizer.get_feature_names()))
-    # temp1 = X.toarray()
 
-    # categories = ['OFF', 'NOT']
-    # temp2 = categories.toarray()
-    # print(temp1.shape)
-    # print(temp2.shape)
-    # docs_train, docs_test, y_train, y_test = train_test_split(
-    #     temp1, temp2, test_size=0.5)
-
-    # clf = Pipeline([
-    #     ('vec', vectorizer),
-    #     ('clf', tree.DecisionTreeClassifier()),
-    # ])
     # Fit a decision tree (classifier based on a set of if-else questions to eventually make an informed decision)
-    clf = tree.DecisionTreeClassifier()
     # The fit method takes two equally long arrays, one with data points (X), and one with labels (all_labels).
     # By convention you will see the labels referred to as 'y', and data as 'X'.
-    clf = clf.fit(X, all_labels)
 
-    # Remember the type of data we are dealing with
-    # for l in data:
-    #     for tweet in data[l]:
-    #         print(l, '->', tweet.strip())
+    y = np.array(all_labels)
+    kf = KFold(n_splits=5)
 
-    y_predicted = clf.predict(X)
-    print(y_predicted)
+    for train_index, test_index in kf.split(X):
+        X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
+        clf = tree.DecisionTreeClassifier(max_depth=1000)
+        clf = clf.fit(X_train, y_train)
+        print(classification_report(clf.predict(X_test), y_test))
+        print('-----------------')
 
 
 main()
+# split_off_not()
