@@ -94,13 +94,13 @@ def main():
     # By convention you will see the labels referred to as 'y', and data as 'X'.
 
     y = np.array(all_labels)
-    kf = KFold(n_splits=5)
+    kf = KFold(n_splits=3)
 
     for train_index, test_index in kf.split(X):
         X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
-        clf = tree.DecisionTreeClassifier(max_depth=1000)
+        clf = tree.DecisionTreeClassifier()
         clf = clf.fit(X_train, y_train)
-        print(classification_report(clf.predict(X_test), y_test))
+        print(classification_report(clf.predict(X_test), y_test, zero_division=0))
         print('-----------------')
 
 
