@@ -6,6 +6,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.model_selection import KFold
 import numpy as np
+import pandas as pd
+import csv
 
 
 def split_off_not():
@@ -95,13 +97,30 @@ def main():
 
     y = np.array(all_labels)
     kf = KFold(n_splits=3)
+    fold = 0
+    results = []
 
     for train_index, test_index in kf.split(X):
         X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
         clf = tree.DecisionTreeClassifier()
         clf = clf.fit(X_train, y_train)
-        print(classification_report(clf.predict(X_test), y_test, zero_division=0))
-        print('-----------------')
+        report = classification_report(clf.predict(X_test), y_test, zero_division=0, output_dict=True)
+        results.append(report)
+        divider = '-----------------'
+        df = pd.DataFrame(report).transpose()
+        print(df)
+        print(divider)
+        write_to_csv(str(clf), df, fold)
+        fold = fold + 1
+
+
+def write_to_csv(clf, df, fold):
+    if fold == 0:
+        f = open('results.csv', 'a')
+        f.write(clf + '\n')
+        f.close()
+
+    df.to_csv('results.csv', mode='a')
 
 
 main()
