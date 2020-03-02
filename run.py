@@ -4,10 +4,11 @@ from sklearn import tree
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
-from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
 import numpy as np
 import pandas as pd
 import csv
+from sklearn.metrics import precision_recall_fscore_support
 
 
 def split_off_not():
@@ -96,29 +97,33 @@ def main():
     # By convention you will see the labels referred to as 'y', and data as 'X'.
 
     y = np.array(all_labels)
-    kf = KFold(n_splits=3)
-    fold = 0
-    results = []
+    kf = StratifiedKFold(n_splits=3)
+    score_array = []
 
-    for train_index, test_index in kf.split(X):
+    for train_index, test_index in kf.split(X, y):
         X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
         clf = tree.DecisionTreeClassifier()
         clf = clf.fit(X_train, y_train)
-        report = classification_report(clf.predict(X_test), y_test, zero_division=0, output_dict=True)
-        results.append(report)
-        divider = '-----------------'
-        df = pd.DataFrame(report).transpose()
-        print(df)
-        print(divider)
-        write_to_csv(str(clf), df, fold)
-        fold = fold + 1
+        y_pred = clf.predict(X_test)
+        # report = classification_report(clf.predict(X_test), y_test, zero_division=0, output_dict=True)
+        # print(report['0']['f1-score'])
+        # results.append(report)
+        # divider = '-----------------'
+        # df = pd.DataFrame(report).transpose()
+        # print(df)
+        # print(divider)
+        score_array.append(precision_recall_fscore_support(y_test, y_pred))
+
+    avg_score = np.mean(score_array, axis=0)
+    print(avg_score)
+    df = pd.DataFrame(avg_score).transpose()
+    write_to_csv(str(clf), df)
 
 
-def write_to_csv(clf, df, fold):
-    if fold == 0:
-        f = open('results.csv', 'a')
-        f.write(clf + '\n')
-        f.close()
+def write_to_csv(clf, df):
+    f = open('results.csv', 'a')
+    f.write(clf + '\n')
+    f.close()
 
     df.to_csv('results.csv', mode='a')
 
