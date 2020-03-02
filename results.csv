@@ -7,3 +7,14 @@ DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
 ,0,1,2,3
 0,0.7185358100017107,0.7608449182459802,0.73214348407739,1930.6666666666667
 1,0.6688388380012128,0.587312900926586,0.612838589361841,1403.0
+RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
+                       criterion='gini', max_depth=2, max_features='auto',
+                       max_leaf_nodes=None, max_samples=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, n_estimators=100,
+                       n_jobs=None, oob_score=False, random_state=0, verbose=0,
+                       warm_start=False)
+,0,1,2,3
+0,0.6480636326027369,0.958725333147295,0.772591584263008,1930.6666666666667
+1,0.8766414141414142,0.28130197196483725,0.41465386205670757,1403.0

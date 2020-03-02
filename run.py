@@ -2,13 +2,13 @@ import os
 from collections import defaultdict
 from sklearn import tree
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
+# from sklearn.metrics import classification_report
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
 import pandas as pd
-import csv
 from sklearn.metrics import precision_recall_fscore_support
+from sklearn.ensemble import RandomForestClassifier
+import gensim
 
 
 def split_off_not():
@@ -91,17 +91,18 @@ def main():
     vectorizer = CountVectorizer(max_features=50, stop_words='english')
     X = vectorizer.fit_transform(all_documents)
     print('These are our "features":', ', '.join(vectorizer.get_feature_names()))
+    # decision_tree(X, all_labels)
+    # random_forest(X, all_labels)
+    create_word2vec(all_documents)
 
-    # Fit a decision tree (classifier based on a set of if-else questions to eventually make an informed decision)
-    # The fit method takes two equally long arrays, one with data points (X), and one with labels (all_labels).
-    # By convention you will see the labels referred to as 'y', and data as 'X'.
 
-    y = np.array(all_labels)
+def decision_tree(data, labels):
+    y = np.array(labels)
     kf = StratifiedKFold(n_splits=3)
     score_array = []
 
-    for train_index, test_index in kf.split(X, y):
-        X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
+    for train_index, test_index in kf.split(data, y):
+        X_train, X_test, y_train, y_test = data[train_index], data[test_index], y[train_index], y[test_index]
         clf = tree.DecisionTreeClassifier()
         clf = clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
@@ -118,6 +119,35 @@ def main():
     print(avg_score)
     df = pd.DataFrame(avg_score).transpose()
     write_to_csv(str(clf), df)
+
+
+def random_forest(data, labels):
+    y = np.array(labels)
+    kf = StratifiedKFold(n_splits=3)
+    score_array = []
+
+    for train_index, test_index in kf.split(data, y):
+        X_train, X_test, y_train, y_test = data[train_index], data[test_index], y[train_index], y[test_index]
+        clf = RandomForestClassifier(max_depth=2, random_state=0)
+        clf = clf.fit(X_train, y_train)
+        y_pred = clf.predict(X_test)
+        score_array.append(precision_recall_fscore_support(y_test, y_pred))
+
+    avg_score = np.mean(score_array, axis=0)
+    print(avg_score)
+    df = pd.DataFrame(avg_score).transpose()
+    write_to_csv(str(clf), df)
+
+
+def create_word2vec(data):
+    documents = []
+    for i, line in enumerate(data):
+        documents.append(gensim.utils.simple_preprocess(line))
+
+    model = gensim.models.Word2Vec(size=100, min_count=2, iter=10)
+    model.build_vocab(documents)
+    w1 = ["bitch"]
+    print(model.wv.most_similar(positive=w1))
 
 
 def write_to_csv(clf, df):
