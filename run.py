@@ -1,19 +1,20 @@
 import os
 from collections import defaultdict
 from sklearn import tree
-from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.metrics import classification_report
+# from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import classification_report
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
 import pandas as pd
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.ensemble import RandomForestClassifier
 import gensim
+from sklearn.pipeline import Pipeline
 
 
 def split_off_not():
     # Edit this to change which model to use
-    CURRENT_PATH = "dev_set"
+    CURRENT_PATH = "train_set"
     # read each file, add that file to a list of files belonging to the same class
     data_path = CURRENT_PATH
     # get all files contained in the directory
@@ -43,9 +44,9 @@ def split_off_not():
                 print(tweet[-6] + " NOT -> " + tweet)
 
 
-def main():
+def load_file(folder):
     # Edit this to change which model to use
-    CURRENT_PATH = "off_not"
+    CURRENT_PATH = folder
     # read each file, add that file to a list of files belonging to the same class
     data_path = CURRENT_PATH
     # get all files contained in the directory
@@ -82,21 +83,46 @@ def main():
             all_documents.append(document)
             all_labels.append(label2id[label])
 
-    # Here we start using scikit-learn!
-    # the CountVectorizer can be used to transform each document into a 'bag-of-words' representation
-    # https://en.wikipedia.org/wiki/Bag-of-words_model
-    # Each document is then represented as *presence* or *absence* of the words in our 'bag'
-    # We don't need to use a dictionary for counting word frequency and selecting the important ones.
-    # sklearn has this (and more advanced) built-in functions!
-    vectorizer = CountVectorizer(max_features=50, stop_words='english')
-    X = vectorizer.fit_transform(all_documents)
-    print('These are our "features":', ', '.join(vectorizer.get_feature_names()))
-    # decision_tree(X, all_labels)
-    # random_forest(X, all_labels)
-    create_word2vec(all_documents)
+    return all_documents, all_labels
 
 
-def decision_tree(data, labels):
+def main():
+    train_docs, train_labels = load_file('train_off_not')
+    dev_docs, dev_labels = load_file('dev_off_not')
+    # vectorizer = CountVectorizer(max_features=50, stop_words='english')
+    # X = vectorizer.fit_transform(model)
+    # print('These are our "features":', ', '.join(vectorizer.get_feature_names()))
+    # create_word2vec(all_documents)
+    # X = load_word2vec()
+    decision_tree(train_docs, train_labels, dev_docs, dev_labels)
+    # random_forest(train_docs, train_labels, dev_docs, dev_labels)
+
+
+def decision_tree(train_docs, train_labels, dev_docs, dev_labels):
+    w2v = load_word2vec()
+    model = Pipeline([
+        ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        ("decision tree", tree.DecisionTreeClassifier())])
+    model.fit(train_docs, train_labels)
+    print(classification_report(model.predict(dev_docs), dev_labels))
+    report = classification_report(model.predict(dev_docs), dev_labels, output_dict=True)
+    df = pd.DataFrame(report).transpose()
+    write_to_csv(str(model["decision tree"]), df)
+
+
+def random_forest(train_docs, train_labels, dev_docs, dev_labels):
+    w2v = load_word2vec()
+    model = Pipeline([
+        ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        ("random forest", RandomForestClassifier())])
+    model.fit(train_docs, train_labels)
+    print(classification_report(model.predict(dev_docs), dev_labels))
+    report = classification_report(model.predict(dev_docs), dev_labels, output_dict=True)
+    df = pd.DataFrame(report).transpose()
+    write_to_csv(str(model["random forest"]), df)
+
+
+def decision_tree_old(data, labels):
     y = np.array(labels)
     kf = StratifiedKFold(n_splits=3)
     score_array = []
@@ -121,7 +147,7 @@ def decision_tree(data, labels):
     write_to_csv(str(clf), df)
 
 
-def random_forest(data, labels):
+def random_forest_old(data, labels):
     y = np.array(labels)
     kf = StratifiedKFold(n_splits=3)
     score_array = []
@@ -144,10 +170,18 @@ def create_word2vec(data):
     for i, line in enumerate(data):
         documents.append(gensim.utils.simple_preprocess(line))
 
-    model = gensim.models.Word2Vec(size=100, min_count=2, iter=10)
+    model = gensim.models.Word2Vec(size=20, min_count=2, iter=10)
     model.build_vocab(documents)
     w1 = ["bitch"]
     print(model.wv.most_similar(positive=w1))
+
+
+def load_word2vec():
+    model = gensim.models.KeyedVectors.load_word2vec_format('crosslingual_EN-ES_english_twitter_100d_weighted.txt.w2v')
+    w1 = ["bitch"]
+    print(model.wv.most_similar(positive=w1))
+    w2v = {w: vec for w, vec in zip(model.wv.index2word, model.wv.syn0)}
+    return w2v
 
 
 def write_to_csv(clf, df):
@@ -156,6 +190,23 @@ def write_to_csv(clf, df):
     f.close()
 
     df.to_csv('results.csv', mode='a')
+
+
+class MeanEmbeddingVectorizer(object):
+    def __init__(self, word2vec):
+        self.word2vec = word2vec
+        # this line is different from python2 version - no more itervalues
+        self.dim = len(list(word2vec.values())[0])
+
+    def fit(self, X, y):
+        return self
+
+    def transform(self, X):
+        return np.array([
+            np.mean([self.word2vec[w] for w in words if w in self.word2vec]
+                    or [np.zeros(self.dim)], axis=0)
+            for words in X
+        ])
 
 
 main()

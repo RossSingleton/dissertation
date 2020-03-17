@@ -1,20 +1,26 @@
+RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
+                       criterion='gini', max_depth=None, max_features='auto',
+                       max_leaf_nodes=None, max_samples=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, n_estimators=100,
+                       n_jobs=None, oob_score=False, random_state=None,
+                       verbose=0, warm_start=False)
+,precision,recall,f1-score,support
+0,0.8660869565217392,0.8706293706293706,0.868352223190933,572.0
+1,0.8262910798122066,0.8205128205128205,0.8233918128654971,429.0
+accuracy,0.8491508491508492,0.8491508491508492,0.8491508491508492,0.8491508491508492
+macro avg,0.8461890181669729,0.8455710955710956,0.8458720180282151,1001.0
+weighted avg,0.8490315807890824,0.8491508491508492,0.8490834759086033,1001.0
 DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
                        max_depth=None, max_features=None, max_leaf_nodes=None,
                        min_impurity_decrease=0.0, min_impurity_split=None,
                        min_samples_leaf=1, min_samples_split=2,
                        min_weight_fraction_leaf=0.0, presort='deprecated',
                        random_state=None, splitter='best')
-,0,1,2,3
-0,0.7185358100017107,0.7608449182459802,0.73214348407739,1930.6666666666667
-1,0.6688388380012128,0.587312900926586,0.612838589361841,1403.0
-RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
-                       criterion='gini', max_depth=2, max_features='auto',
-                       max_leaf_nodes=None, max_samples=None,
-                       min_impurity_decrease=0.0, min_impurity_split=None,
-                       min_samples_leaf=1, min_samples_split=2,
-                       min_weight_fraction_leaf=0.0, n_estimators=100,
-                       n_jobs=None, oob_score=False, random_state=0, verbose=0,
-                       warm_start=False)
-,0,1,2,3
-0,0.6480636326027369,0.958725333147295,0.772591584263008,1930.6666666666667
-1,0.8766414141414142,0.28130197196483725,0.41465386205670757,1403.0
+,precision,recall,f1-score,support
+0,0.688695652173913,0.7795275590551181,0.7313019390581716,508.0
+1,0.7370892018779343,0.6369168356997972,0.6833514689880305,493.0
+accuracy,0.7092907092907093,0.7092907092907093,0.7092907092907093,0.7092907092907093
+macro avg,0.7128924270259236,0.7082221973774576,0.707326704023101,1001.0
+weighted avg,0.7125298379921772,0.7092907092907093,0.7076859732793708,1001.0
