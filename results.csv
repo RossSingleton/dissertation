@@ -24,3 +24,47 @@ DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
 accuracy,0.7092907092907093,0.7092907092907093,0.7092907092907093,0.7092907092907093
 macro avg,0.7128924270259236,0.7082221973774576,0.707326704023101,1001.0
 weighted avg,0.7125298379921772,0.7092907092907093,0.7076859732793708,1001.0
+RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
+                       criterion='gini', max_depth=None, max_features='auto',
+                       max_leaf_nodes=None, max_samples=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, n_estimators=100,
+                       n_jobs=None, oob_score=False, random_state=None,
+                       verbose=0, warm_start=False)
+,precision,recall,f1-score,support
+0,0.8504347826086956,0.8763440860215054,0.8631950573698147,558.0
+1,0.8380281690140845,0.8058690744920993,0.8216340621403911,443.0
+accuracy,0.8451548451548452,0.8451548451548452,0.8451548451548452,0.8451548451548452
+macro avg,0.84423147581139,0.8411065802568023,0.8424145597551029,1001.0
+weighted avg,0.8449441434254661,0.8451548451548452,0.844801929610939,1001.0
+SVC(C=1.0, break_ties=False, cache_size=200, class_weight=None, coef0=0.0,
+    decision_function_shape='ovr', degree=3, gamma='auto', kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+,precision,recall,f1-score,support
+0,1.0,0.5744255744255744,0.7296954314720812,1001.0
+1,0.0,0.0,0.0,0.0
+accuracy,0.5744255744255744,0.5744255744255744,0.5744255744255744,0.5744255744255744
+macro avg,0.5,0.2872127872127872,0.3648477157360406,1001.0
+weighted avg,1.0,0.5744255744255744,0.7296954314720812,1001.0
+SVC(C=1.0, break_ties=False, cache_size=200, class_weight=None, coef0=0.0,
+    decision_function_shape='ovr', degree=3, gamma='scale', kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+,precision,recall,f1-score,support
+0,0.928695652173913,0.9005059021922428,0.9143835616438356,593.0
+1,0.8615023474178404,0.8995098039215687,0.8800959232613909,408.0
+accuracy,0.9000999000999002,0.9000999000999002,0.9000999000999002,0.9000999000999002
+macro avg,0.8950989997958767,0.9000078530569058,0.8972397424526133,1001.0
+weighted avg,0.9013081713142951,0.9000999000999002,0.900408180564877,1001.0
+SVC(C=1.0, break_ties=False, cache_size=200, class_weight=None, coef0=0.0,
+    decision_function_shape='ovr', degree=3, gamma='scale', kernel='rbf',
+    max_iter=-1, probability=False, random_state=None, shrinking=True,
+    tol=0.001, verbose=False)
+,precision,recall,f1-score,support
+0,0.928695652173913,0.9005059021922428,0.9143835616438356,593.0
+1,0.8615023474178404,0.8995098039215687,0.8800959232613909,408.0
+accuracy,0.9000999000999002,0.9000999000999002,0.9000999000999002,0.9000999000999002
+macro avg,0.8950989997958767,0.9000078530569058,0.8972397424526133,1001.0
+weighted avg,0.9013081713142951,0.9000999000999002,0.900408180564877,1001.0
