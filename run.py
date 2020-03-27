@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 import gensim
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
-from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
 
 
 def split_off_not():
@@ -98,7 +98,8 @@ def main():
     # X = load_word2vec()
     # decision_tree(train_docs, train_labels, dev_docs, dev_labels)
     # random_forest(train_docs, train_labels, dev_docs, dev_labels)
-    svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
+    # svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
+    logistic_regression(train_docs, train_labels, dev_docs, dev_labels)
 
 
 def decision_tree(train_docs, train_labels, dev_docs, dev_labels):
@@ -128,7 +129,6 @@ def random_forest(train_docs, train_labels, dev_docs, dev_labels):
 def svc_classifier(train_docs, train_labels, dev_docs, dev_labels):
     w2v = load_word2vec()
     model = Pipeline([
-        # ('scaler', StandardScaler()),
         ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
         ("svc", SVC())])
     model.fit(train_docs, train_labels)
@@ -136,6 +136,18 @@ def svc_classifier(train_docs, train_labels, dev_docs, dev_labels):
     report = classification_report(model.predict(dev_docs), dev_labels, output_dict=True)
     df = pd.DataFrame(report).transpose()
     write_to_csv(str(model["svc"]), df)
+
+
+def logistic_regression(train_docs, train_labels, dev_docs, dev_labels):
+    w2v = load_word2vec()
+    model = Pipeline([
+        ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        ("logistic regression", LogisticRegression())])
+    model.fit(train_docs, train_labels)
+    print(classification_report(model.predict(dev_docs), dev_labels))
+    report = classification_report(model.predict(dev_docs), dev_labels, output_dict=True)
+    df = pd.DataFrame(report).transpose()
+    write_to_csv(str(model["logistic regression"]), df)
 
 
 def decision_tree_old(data, labels):
