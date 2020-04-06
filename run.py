@@ -12,6 +12,7 @@ import gensim
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def split_off_not():
@@ -99,7 +100,21 @@ def main():
     # decision_tree(train_docs, train_labels, dev_docs, dev_labels)
     # random_forest(train_docs, train_labels, dev_docs, dev_labels)
     # svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
-    logistic_regression(train_docs, train_labels, dev_docs, dev_labels)
+    # logistic_regression(train_docs, train_labels, dev_docs, dev_labels)
+    svc_tfidf(train_docs, train_labels, dev_docs, dev_labels)
+
+
+def svc_tfidf(train_docs, train_labels, dev_docs, dev_labels):
+    model = Pipeline([
+        ("tf idf vectorizer", TfidfVectorizer(ngram_range=(1, 15), analyzer='char')),
+        ("svc", SVC())])
+    model.fit(train_docs, train_labels)
+    print(model["tf idf vectorizer"])
+    # print(model["tf idf vectorizer"].get_feature_names())
+    print(classification_report(model.predict(dev_docs), dev_labels))
+    report = classification_report(model.predict(dev_docs), dev_labels, output_dict=True)
+    df = pd.DataFrame(report).transpose()
+    write_to_csv(str(model["svc"]), df)
 
 
 def decision_tree(train_docs, train_labels, dev_docs, dev_labels):
