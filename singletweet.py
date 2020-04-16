@@ -2,18 +2,11 @@ import os
 import sys
 from collections import defaultdict
 from sklearn import tree
-# from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics import classification_report
-from sklearn.model_selection import StratifiedKFold
 import numpy as np
-import pandas as pd
-from sklearn.metrics import precision_recall_fscore_support
-from sklearn.ensemble import RandomForestClassifier
 import gensim
 from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.feature_extraction.text import TfidfVectorizer
+import json
 
 
 def load_single_file():
@@ -21,8 +14,10 @@ def load_single_file():
     f = open(CURRENT_PATH, "r")
     data = f.read()
     f.close()
+    final = []
+    final.append(data)
 
-    return data
+    return final
 
 
 def load_train_files(folder):
@@ -71,17 +66,33 @@ def main():
     train_docs, train_labels = load_train_files('train_off_not')
     tweet = load_single_file()
     # svc_classifier(train_docs, train_labels, tweet)
-    decision_tree(train_docs, train_labels, tweet)
+    model, prediction = decision_tree(train_docs, train_labels, tweet)
+    if prediction == 1:
+        output = {
+            "Prediction": 1,
+            "Label": "Offensive"
+        }
+    else:
+        output = {
+            "Prediction": 0,
+            "Label": "Not Offensive"
+        }
+
+    print(json.dumps(output))
+    return model
 
 
 def decision_tree(train_docs, train_labels, tweet):
-    print(train_labels)
+    # print(train_labels)
     w2v = load_word2vec()
     model = Pipeline([
         ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
         ("decision tree", tree.DecisionTreeClassifier())])
     model.fit(train_docs, train_labels)
-    print(model.predict(tweet))
+    prediction = model.predict(tweet)
+    print(prediction)
+
+    return model, prediction
 
 
 def svc_classifier(train_docs, train_labels, tweet):
@@ -96,7 +107,7 @@ def svc_classifier(train_docs, train_labels, tweet):
 def load_word2vec():
     model = gensim.models.KeyedVectors.load_word2vec_format('crosslingual_EN-ES_english_twitter_100d_weighted.txt.w2v')
     w1 = ["bitch"]
-    print(model.wv.most_similar(positive=w1))
+    # print(model.wv.most_similar(positive=w1))
     w2v = {w: vec for w, vec in zip(model.wv.index2word, model.wv.syn0)}
     return w2v
 
@@ -118,4 +129,4 @@ class MeanEmbeddingVectorizer(object):
         ])
 
 
-main()
+model = main()

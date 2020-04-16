@@ -149,3 +149,27 @@ SVC(C=1.0, break_ties=False, cache_size=200, class_weight=None, coef0=0.0,
 accuracy,0.9790209790209791,0.9790209790209791,0.9790209790209791,0.9790209790209791
 macro avg,0.9783935497040213,0.9786866830065359,0.9785390724460721,1001.0
 weighted avg,0.9790294008910053,0.9790209790209791,0.9790241917314784,1001.0
+DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
+                       max_depth=None, max_features=None, max_leaf_nodes=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, presort='deprecated',
+                       random_state=None, splitter='best')
+,precision,recall,f1-score,support
+0,0.6852173913043478,0.7911646586345381,0.7343895619757688,498.0
+1,0.755868544600939,0.6401590457256461,0.6932185145317545,503.0
+accuracy,0.7152847152847153,0.7152847152847153,0.7152847152847153,0.7152847152847153
+macro avg,0.7205429679526434,0.7156618521800922,0.7138040382537616,1001.0
+weighted avg,0.720719419384453,0.7152847152847153,0.7137012134599453,1001.0
+DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
+                       max_depth=None, max_features=None, max_leaf_nodes=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, presort='deprecated',
+                       random_state=None, splitter='best')
+,precision,recall,f1-score,support
+0,0.6817391304347826,0.7808764940239044,0.7279480037140205,502.0
+1,0.7417840375586855,0.6332665330661322,0.6832432432432433,499.0
+accuracy,0.7072927072927073,0.7072927072927073,0.7072927072927073,0.7072927072927073
+macro avg,0.7117615839967341,0.7070715135450183,0.7055956234786318,1001.0
+weighted avg,0.7116716066134315,0.7072927072927073,0.7056626136291874,1001.0
