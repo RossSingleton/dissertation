@@ -97,11 +97,11 @@ def main():
     # print('These are our "features":', ', '.join(vectorizer.get_feature_names()))
     # create_word2vec(all_documents)
     # X = load_word2vec()
-    decision_tree(train_docs, train_labels, dev_docs, dev_labels)
+    # decision_tree(train_docs, train_labels, dev_docs, dev_labels)
     # random_forest(train_docs, train_labels, dev_docs, dev_labels)
     # svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
     # logistic_regression(train_docs, train_labels, dev_docs, dev_labels)
-    # svc_tfidf(train_docs, train_labels, dev_docs, dev_labels)
+    svc_tfidf(train_docs, train_labels, dev_docs, dev_labels)
 
 
 def svc_tfidf(train_docs, train_labels, dev_docs, dev_labels):
