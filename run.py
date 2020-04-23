@@ -16,7 +16,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 def split_off_not():
-    # Edit this to change which model to use
+    # Edit this to change which file to use
     CURRENT_PATH = "train_set"
     # read each file, add that file to a list of files belonging to the same class
     data_path = CURRENT_PATH
@@ -27,7 +27,6 @@ def split_off_not():
     data = defaultdict(list)
     for one_file in list_of_files:
         # os.path.join joins a path to a folder and a file into one manageable path
-        # in windows, something like os.path.join(c:\Users\luis,'file.txt') >>> 'c:\\Users\\luis\\file.txt'
         with open(os.path.join(data_path, one_file), 'r') as f:
             for line in f:
                 # each line in each file contains one single document
