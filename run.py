@@ -1,7 +1,7 @@
 import os
 from collections import defaultdict
 from sklearn import tree
-# from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics import classification_report
 from sklearn.model_selection import StratifiedKFold
 import numpy as np
@@ -89,18 +89,20 @@ def load_file(folder):
 
 
 def main():
+    # Load files from the train set and dev set
     train_docs, train_labels = load_file('train_off_not')
     dev_docs, dev_labels = load_file('dev_off_not')
+    # Set up vectorizer
     # vectorizer = CountVectorizer(max_features=50, stop_words='english')
-    # X = vectorizer.fit_transform(model)
+    # X = vectorizer.fit_transform(train_docs)
     # print('These are our "features":', ', '.join(vectorizer.get_feature_names()))
     # create_word2vec(all_documents)
     # X = load_word2vec()
     # decision_tree(train_docs, train_labels, dev_docs, dev_labels)
     # random_forest(train_docs, train_labels, dev_docs, dev_labels)
-    # svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
+    svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
     # logistic_regression(train_docs, train_labels, dev_docs, dev_labels)
-    svc_tfidf(train_docs, train_labels, dev_docs, dev_labels)
+    # svc_tfidf(train_docs, train_labels, dev_docs, dev_labels)
 
 
 def svc_tfidf(train_docs, train_labels, dev_docs, dev_labels):
@@ -143,7 +145,8 @@ def random_forest(train_docs, train_labels, dev_docs, dev_labels):
 def svc_classifier(train_docs, train_labels, dev_docs, dev_labels):
     w2v = load_word2vec()
     model = Pipeline([
-        ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        ("count vectorizer", CountVectorizer(max_features=50, stop_words='english')),
+        # ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
         ("svc", SVC())])
     model.fit(train_docs, train_labels)
     print(classification_report(model.predict(dev_docs), dev_labels))
@@ -218,20 +221,20 @@ def create_word2vec(data):
     print(model.wv.most_similar(positive=w1))
 
 
-def load_word2vec():
-    model = gensim.models.KeyedVectors.load_word2vec_format('crosslingual_EN-ES_english_twitter_100d_weighted.txt.w2v')
-    w1 = ["bitch"]
-    print(model.wv.most_similar(positive=w1))
-    w2v = {w: vec for w, vec in zip(model.wv.index2word, model.wv.syn0)}
-    return w2v
-
-
 def write_to_csv(clf, df):
     f = open('results.csv', 'a')
     f.write(clf + '\n')
     f.close()
 
     df.to_csv('results.csv', mode='a')
+
+
+def load_word2vec():
+    model = gensim.models.KeyedVectors.load_word2vec_format('crosslingual_EN-ES_english_twitter_100d_weighted.txt.w2v')
+    w1 = ["bitch"]
+    print(model.wv.most_similar(positive=w1))
+    w2v = {w: vec for w, vec in zip(model.wv.index2word, model.wv.syn0)}
+    return w2v
 
 
 class MeanEmbeddingVectorizer(object):
