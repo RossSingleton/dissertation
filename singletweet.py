@@ -65,8 +65,7 @@ def load_train_files(folder):
 def main():
     train_docs, train_labels = load_train_files('train_off_not')
     tweet = load_single_file()
-    # svc_classifier(train_docs, train_labels, tweet)
-    model, prediction = decision_tree(train_docs, train_labels, tweet)
+    model, prediction = svc_classifier(train_docs, train_labels, tweet)
     if prediction == 1:
         output = {
             "Prediction": 1,
@@ -82,26 +81,16 @@ def main():
     return model
 
 
-def decision_tree(train_docs, train_labels, tweet):
-    # print(train_labels)
-    w2v = load_word2vec()
-    model = Pipeline([
-        ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
-        ("decision tree", tree.DecisionTreeClassifier())])
-    model.fit(train_docs, train_labels)
-    prediction = model.predict(tweet)
-    print(prediction)
-
-    return model, prediction
-
-
 def svc_classifier(train_docs, train_labels, tweet):
     w2v = load_word2vec()
     model = Pipeline([
         ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
         ("svc", SVC())])
     model.fit(train_docs, train_labels)
-    print(model.predict(tweet))
+    prediction = model.predict(tweet)
+    print(prediction)
+    
+    return model, prediction
 
 
 def load_word2vec():

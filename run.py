@@ -111,7 +111,6 @@ def svc_tfidf(train_docs, train_labels, dev_docs, dev_labels):
         ("svc", SVC())])
     model.fit(train_docs, train_labels)
     print(model["tf idf vectorizer"])
-    # print(model["tf idf vectorizer"].get_feature_names())
     print(classification_report(model.predict(dev_docs), dev_labels))
     report = classification_report(model.predict(dev_docs), dev_labels, output_dict=True)
     df = pd.DataFrame(report).transpose()
@@ -145,8 +144,7 @@ def random_forest(train_docs, train_labels, dev_docs, dev_labels):
 def svc_classifier(train_docs, train_labels, dev_docs, dev_labels):
     w2v = load_word2vec()
     model = Pipeline([
-        ("count vectorizer", CountVectorizer(max_features=50, stop_words='english')),
-        # ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
         ("svc", SVC())])
     model.fit(train_docs, train_labels)
     print(classification_report(model.predict(dev_docs), dev_labels))
@@ -177,13 +175,6 @@ def decision_tree_old(data, labels):
         clf = tree.DecisionTreeClassifier()
         clf = clf.fit(X_train, y_train)
         y_pred = clf.predict(X_test)
-        # report = classification_report(clf.predict(X_test), y_test, zero_division=0, output_dict=True)
-        # print(report['0']['f1-score'])
-        # results.append(report)
-        # divider = '-----------------'
-        # df = pd.DataFrame(report).transpose()
-        # print(df)
-        # print(divider)
         score_array.append(precision_recall_fscore_support(y_test, y_pred))
 
     avg_score = np.mean(score_array, axis=0)
