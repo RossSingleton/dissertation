@@ -17,7 +17,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 def split_off_not():
     # Edit this to change which file to use
-    CURRENT_PATH = "train_set"
+    CURRENT_PATH = "test_set"
     # read each file, add that file to a list of files belonging to the same class
     data_path = CURRENT_PATH
     # get all files contained in the directory
@@ -91,7 +91,7 @@ def load_file(folder):
 def main():
     # Load files from the train set and dev set
     train_docs, train_labels = load_file('train_off_not')
-    dev_docs, dev_labels = load_file('dev_off_not')
+    dev_docs, dev_labels = load_file('test_off_not')
     # Set up vectorizer
     # vectorizer = CountVectorizer(max_features=50, stop_words='english')
     # X = vectorizer.fit_transform(train_docs)
@@ -100,8 +100,8 @@ def main():
     # X = load_word2vec()
     # decision_tree(train_docs, train_labels, dev_docs, dev_labels)
     # random_forest(train_docs, train_labels, dev_docs, dev_labels)
-    svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
     # logistic_regression(train_docs, train_labels, dev_docs, dev_labels)
+    svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
     # svc_tfidf(train_docs, train_labels, dev_docs, dev_labels)
 
 
@@ -121,6 +121,7 @@ def decision_tree(train_docs, train_labels, dev_docs, dev_labels):
     w2v = load_word2vec()
     model = Pipeline([
         ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        # ("count vectorizer", CountVectorizer(max_features=50, stop_words='english')),
         ("decision tree", tree.DecisionTreeClassifier())])
     model.fit(train_docs, train_labels)
     print(classification_report(model.predict(dev_docs), dev_labels))
@@ -133,6 +134,7 @@ def random_forest(train_docs, train_labels, dev_docs, dev_labels):
     w2v = load_word2vec()
     model = Pipeline([
         ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        # ("count vectorizer", CountVectorizer(max_features=50, stop_words='english')),
         ("random forest", RandomForestClassifier())])
     model.fit(train_docs, train_labels)
     print(classification_report(model.predict(dev_docs), dev_labels))
@@ -145,6 +147,7 @@ def svc_classifier(train_docs, train_labels, dev_docs, dev_labels):
     w2v = load_word2vec()
     model = Pipeline([
         ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        # ("count vectorizer", CountVectorizer(max_features=50, stop_words='english')),
         ("svc", SVC())])
     model.fit(train_docs, train_labels)
     print(classification_report(model.predict(dev_docs), dev_labels))
@@ -157,6 +160,7 @@ def logistic_regression(train_docs, train_labels, dev_docs, dev_labels):
     w2v = load_word2vec()
     model = Pipeline([
         ("word2vec vectorizer", MeanEmbeddingVectorizer(w2v)),
+        # ("count vectorizer", CountVectorizer(max_features=50, stop_words='english')),
         ("logistic regression", LogisticRegression())])
     model.fit(train_docs, train_labels)
     print(classification_report(model.predict(dev_docs), dev_labels))
@@ -213,11 +217,11 @@ def create_word2vec(data):
 
 
 def write_to_csv(clf, df):
-    f = open('results.csv', 'a')
+    f = open('results_final.csv', 'a')
     f.write(clf + '\n')
     f.close()
 
-    df.to_csv('results.csv', mode='a')
+    df.to_csv('results_final.csv', mode='a')
 
 
 def load_word2vec():
