@@ -101,8 +101,8 @@ def main():
     # decision_tree(train_docs, train_labels, dev_docs, dev_labels)
     # random_forest(train_docs, train_labels, dev_docs, dev_labels)
     # logistic_regression(train_docs, train_labels, dev_docs, dev_labels)
-    svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
-    # svc_tfidf(train_docs, train_labels, dev_docs, dev_labels)
+    # svc_classifier(train_docs, train_labels, dev_docs, dev_labels)
+    svc_tfidf(train_docs, train_labels, dev_docs, dev_labels)
 
 
 def svc_tfidf(train_docs, train_labels, dev_docs, dev_labels):
