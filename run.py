@@ -13,6 +13,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
+from joblib import dump
 
 
 def split_off_not():
@@ -110,6 +111,7 @@ def svc_tfidf(train_docs, train_labels, dev_docs, dev_labels):
         ("tf idf vectorizer", TfidfVectorizer(ngram_range=(1, 15), analyzer='char')),
         ("svc", SVC())])
     model.fit(train_docs, train_labels)
+    dump(model, "svc_tfidf.joblib")
     print(model["tf idf vectorizer"])
     print(classification_report(model.predict(dev_docs), dev_labels))
     report = classification_report(model.predict(dev_docs), dev_labels, output_dict=True)
